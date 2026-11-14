@@ -38,7 +38,7 @@ jobs:
           }
           if ($out.Count -eq 0) { $out = @("См. CHANGELOG.md") }
           $out | Out-File dist/NOTES.md -Encoding utf8
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: Flurry
           path: dist/*
