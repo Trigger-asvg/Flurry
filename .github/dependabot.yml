@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: monthly
+    ignore:
+      # eframe закреплён (=0.29.1) намеренно: обновлять вручную вместе с правками UI
+      - dependency-name: eframe

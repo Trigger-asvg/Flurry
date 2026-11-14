@@ -1,0 +1,26 @@
+#pragma code_page(65001)
+1 ICON "app.ico"
+1 24 "app.manifest"
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904b0"
+    BEGIN
+      VALUE "FileDescription", "Flurry - live weather overlay"
+      VALUE "ProductName", "Flurry"
+      VALUE "FileVersion", "1.0.0"
+      VALUE "ProductVersion", "1.0.0"
+      VALUE "OriginalFilename", "Flurry.exe"
+      VALUE "InternalName", "Flurry"
+      VALUE "CompanyName", "p222222p222"
+      VALUE "LegalCopyright", "Copyright (c) 2026 p222222p222. MIT License"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END

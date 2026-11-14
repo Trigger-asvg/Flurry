@@ -1,0 +1,53 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Test
+        run: cargo test --locked
+      - name: Build
+        run: cargo build --release --locked
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item target/release/Flurry.exe dist/Flurry.exe
+          (Get-FileHash dist/Flurry.exe -Algorithm SHA256).Hash | Out-File dist/Flurry.exe.sha256 -Encoding ascii
+      - name: Release notes
+        shell: pwsh
+        run: |
+          # из CHANGELOG.md берём только раздел текущей версии (# vX.Y.Z ... до следующего заголовка)
+          $tag = "${{ github.ref_name }}"
+          $lines = Get-Content CHANGELOG.md -Encoding utf8
+          $out = @(); $take = $false
+          foreach ($l in $lines) {
+            if ($l -match '^# ') { if ($take) { break }; $take = $l -match "^# $([regex]::Escape($tag))(\s|$)"; continue }
+            if ($take) { $out += $l }
+          }
+          if ($out.Count -eq 0) { $out = @("См. CHANGELOG.md") }
+          $out | Out-File dist/NOTES.md -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Flurry
+          path: dist/*
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Flurry ${{ github.ref_name }}
+          files: |
+            dist/Flurry.exe
+            dist/Flurry.exe.sha256
+          body_path: dist/NOTES.md
